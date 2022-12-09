@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
       - uses: AnimMouse/setup-yt-dlp@v1
         with:
           with-ffmpeg: true
       - name: Download
         run: |
           ./download.sh
+      - uses: EndBug/add-and-commit@v9

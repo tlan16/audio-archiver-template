@@ -13,7 +13,6 @@ echo "Converting $INPUT_FILE to $TEMP_FILE"
 docker run -v "$PROJECT_DIR":"$PROJECT_DIR" -w "$PROJECT_DIR" "$DOCKER_IMAGE" \
   -hide_banner \
   -loglevel error \
-  -stats \
   -i "$INPUT_FILE" \
   -c:v libfdk_aac  \
   -ac 2 \

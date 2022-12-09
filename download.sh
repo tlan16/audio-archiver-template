@@ -4,11 +4,9 @@ set -euo pipefail
 PROJECT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$PROJECT_DIR"
 
-#URL="https://space.bilibili.com/316568752"
 URL="https://www.youtube.com/watch?v=gTG1ah53LBE"
 
 yt-dlp \
-  --verbose \
   --ignore-errors \
   --sleep-interval 1 \
   --max-sleep-interval 5 \
