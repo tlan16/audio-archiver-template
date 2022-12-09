@@ -9,9 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
-      - uses: FedericoCarboni/setup-ffmpeg@v2
-        id: setup-ffmpeg
       - uses: AnimMouse/setup-yt-dlp@v1
+        with:
+          with-ffmpeg: true
       - name: Download
         run: |
           ./download.sh

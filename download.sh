@@ -5,7 +5,7 @@ PROJECT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$PROJECT_DIR"
 
 #URL="https://space.bilibili.com/316568752"
-URL="https://www.bilibili.com/video/BV1dR4y1Q7zV"
+URL="https://www.youtube.com/watch?v=gTG1ah53LBE"
 
 yt-dlp \
   --verbose \
