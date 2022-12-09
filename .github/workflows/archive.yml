@@ -1,7 +1,9 @@
 name: Archive
 on:
-    push:
-      branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [ "main" ]
 
 jobs:
   archive:
@@ -13,5 +15,5 @@ jobs:
           with-ffmpeg: true
       - name: Download
         run: |
-          ./download.sh
+          ./scripts/download.sh
       - uses: EndBug/add-and-commit@v9

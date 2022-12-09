@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
-PROJECT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+PROJECT_DIR="$SCRIPT_DIR/.."
 cd "$PROJECT_DIR"
+
 INPUT_FILE="$1"
 TEMP_FILE="$(uuidgen).m4a"
 DOCKER_IMAGE="jrottenberg/ffmpeg:5.1.2-alpine313"
 
 if [[ "$(docker images -q myimage:mytag 2> /dev/null)" == "" ]]; then
-  echo "Docker image \"${DOCKER_IMAGE}\" not found on local. Pull..."
+  echo "Docker image \"${DOCKER_IMAGE}\" not found on local. Pulling image ..."
   docker pull --quiet "$DOCKER_IMAGE"
 fi
 
