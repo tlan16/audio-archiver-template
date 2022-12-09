@@ -8,6 +8,10 @@ cd "$PROJECT_DIR"
 # Read the list of URLs from the file URLs.txt
 while read -r URL; do
   if [[ -n "$URL" ]]; then
+    if [[ "$URL" =~ ^#.* ]]; then
+      continue
+    fi
+
     echo "Start downloading $URL"
     yt-dlp \
       --ignore-errors \
