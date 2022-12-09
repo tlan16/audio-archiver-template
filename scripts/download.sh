@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_DIR="$SCRIPT_DIR/.."
-cd "$PROJECT_DIR"
+cd "$PROJECT_DIR" || exit
 
 # Read the list of URLs from the file URLs.txt
 while read -r URL; do
