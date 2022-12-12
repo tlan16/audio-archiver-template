@@ -17,6 +17,9 @@ ffmpeg \
   -i "$INPUT_FILE" \
   -c:a libopus \
   -b:a 6k \
+  -frame_duration:a 60 \
+  -application:a voip \
+  -cutoff:a 4000 \
   "$TEMP_FILE"
 
 mv "$TEMP_FILE" "$TARGET_FILE"
