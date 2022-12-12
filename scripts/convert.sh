@@ -6,21 +6,18 @@ PROJECT_DIR="$SCRIPT_DIR/.."
 cd "$PROJECT_DIR"
 
 INPUT_FILE="$1"
-TEMP_FILE="$(uuidgen).m4a"
-DOCKER_IMAGE="jrottenberg/ffmpeg:5.1.2-alpine313"
+TEMP_FILE="$(uuidgen).ogg"
+TARGET_FILE="${INPUT_FILE%.*}.ogg"
 
-echo "Converting $INPUT_FILE to $TEMP_FILE"
+echo "Converting $INPUT_FILE to $TARGET_FILE"
 
-docker run -v "$PROJECT_DIR":"$PROJECT_DIR" -w "$PROJECT_DIR" "$DOCKER_IMAGE" \
+ffmpeg \
   -hide_banner \
   -loglevel error \
   -i "$INPUT_FILE" \
-  -c:v libfdk_aac  \
-  -ac 2 \
-  -profile:a aac_he_v2 \
-  -b:a 20k \
-  -c:v copy \
+  -c:a libopus \
+  -b:a 6k \
   "$TEMP_FILE"
 
-echo "Replacing $INPUT_FILE with $TEMP_FILE"
-mv "$TEMP_FILE" "$INPUT_FILE"
+mv "$TEMP_FILE" "$TARGET_FILE"
+rm "$INPUT_FILE"
