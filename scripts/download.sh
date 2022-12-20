@@ -19,8 +19,8 @@ while read -r URL; do
       --add-metadata \
       --embed-thumbnail \
       --embed-subs \
-      --download-archive \
-      archive.txt \
+      --download-archive archive.txt \
+      --concurrent-fragments 4
       --audio-format m4a \
       --extract-audio \
       --format "worstaudio/worst" \
