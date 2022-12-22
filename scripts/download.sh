@@ -30,4 +30,4 @@ while read -r URL; do
 done <URLs.txt
 
 # Remove unprocessed temp files
-rm -f ./*.xml ./*.meta ./*.json ./*.png ./*.webp
+rm -f ./*.xml ./*.meta ./*.json ./*.png ./*.webp *.temp.* *part* *ytdl || ture
