@@ -29,4 +29,5 @@ while read -r URL; do
   fi
 done <URLs.txt
 
-rm -f ./*.xml
+# Remove unprocessed temp files
+rm -f ./*.xml ./*.meta ./*.json ./*.png ./*.webp
