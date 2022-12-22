@@ -20,7 +20,7 @@ while read -r URL; do
       --embed-thumbnail \
       --embed-subs \
       --download-archive archive.txt \
-      --concurrent-fragments 4
+      --concurrent-fragments 4 \
       --audio-format m4a \
       --extract-audio \
       --format "worstaudio/worst" \
