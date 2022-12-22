@@ -8,7 +8,7 @@ PROJECT_DIR="$SCRIPT_DIR/.."
 cd "$PROJECT_DIR" || exit 1
 
 # Set the maximum size in bytes
-max_size=40000000 # 40 MB
+max_size=20000000 # 20 MB
 
 # Initialize the total size to 0
 total_size=0
