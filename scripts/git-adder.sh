@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # This is experimental.
 
-set -euox pipefail
+set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_DIR="$SCRIPT_DIR/.."
@@ -19,24 +19,20 @@ for file in *.* **/*; do
     continue
   fi
 
-  # Get the size of the file in bytes
   file_size=$(wc -c <"$file")
-
-  # Add the file size to the total size
-  total_size=$((total_size + file_size))
-
-  if [ $total_size -gt $max_size ] && [ -n "$(git status --porcelain)" ]; then
+  if [ $total_size -gt $max_size ] && [ "$(git status --porcelain)" ]; then
     git commit --message "$total_size"
     git push --force-with-lease
     total_size=0
   else
     git add "$file"
     echo "Added $file"
+    total_size=$((total_size + file_size))
   fi
 done
 
 git add .
-if [ -n "$(git status --porcelain)" ]; then
+if [ "$(git status --porcelain)" ]; then
   git commit --message "$total_size"
   git push --force-with-lease
 fi
