@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# This is experimental. 
+# This is experimental.
 
-set -euo pipefail
+set -euox pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_DIR="$SCRIPT_DIR/.."
@@ -14,24 +14,29 @@ max_size=40000000 # 40 MB
 total_size=0
 
 # shellcheck disable=SC2044
-for file in $(find . -type f); do
+for file in *.* **/*; do
+  if [[ "$file" == *"URLs.txt" ]]; then
+    continue
+  fi
+
   # Get the size of the file in bytes
   file_size=$(wc -c <"$file")
 
   # Add the file size to the total size
   total_size=$((total_size + file_size))
 
-  if [ $total_size -gt $max_size ]; then
-    # If git staged file size is greater than zero, commit the files
-    if [ "$(git diff --cached --numstat | wc -l)" -gt 0 ]; then
-      git commit --message "$total_size"
-      git push
-      total_size=0
-    fi
+  if [ $total_size -gt $max_size ] && [ -n "$(git status --porcelain)" ]; then
+    git commit --message "$total_size"
+    git push --force-with-lease
+    total_size=0
   else
     git add "$file"
+    echo "Added $file"
   fi
 done
 
-git commit --message "$total_size"
-git push
+git add .
+if [ -n "$(git status --porcelain)" ]; then
+  git commit --message "$total_size"
+  git push --force-with-lease
+fi
