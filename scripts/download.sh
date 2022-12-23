@@ -25,6 +25,7 @@ while read -r URL; do
       --extract-audio \
       --format "worstaudio/worst" \
       --exec "./scripts/convert.sh {}" \
+      "$@" \
       "$URL"  | grep --invert-match "has already been recorded in the archive"
   fi
 done <URLs.txt
