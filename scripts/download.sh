@@ -20,12 +20,12 @@ while read -r URL; do
       --embed-thumbnail \
       --embed-subs \
       --download-archive archive.txt \
-      --concurrent-fragments 4 \
+      --concurrent-fragments 2 \
       --audio-format m4a \
       --extract-audio \
       --format "worstaudio/worst" \
       --exec "./scripts/convert.sh {}" \
-      "$URL"
+      "$URL"  | grep --invert-match "has already been recorded in the archive"
   fi
 done <URLs.txt
 
