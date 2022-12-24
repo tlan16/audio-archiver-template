@@ -15,7 +15,7 @@ total_size=0
 
 # shellcheck disable=SC2044
 for file in *.* **/*; do
-  if [[ "$file" == *"URLs.txt" ]]; then
+  if [[ "$file" == *"URLs.txt" ]] || [ ! -f "$file" ]; then
     continue
   fi
 
