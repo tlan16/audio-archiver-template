@@ -1,0 +1,5 @@
+# Add the urls you want to archive to line line.
+# Comment is supported by adding # at the start of a line.
+
+# Example: remove the stargin # of the next line.
+https://www.youtube.com/watch?v=dQw4w9WgXcQ

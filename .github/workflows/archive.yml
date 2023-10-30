@@ -1,0 +1,36 @@
+name: Archive
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{github.repository}}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  archive:
+    runs-on:
+      - ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: aria2 uuid-runtime python3-mutagen python3-certifi ca-certificates python3-brotli python3-websockets python3-xattr python3-pycryptodome python3-m3u8 httpie ffmpeg
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Download
+        run: |
+          ./scripts/download.sh
+      - uses: EndBug/add-and-commit@v9
+      - uses: TooMuch4U/actions-clean@v2
+      - uses: gautamkrishnar/keepalive-workflow@v1
+
+
