@@ -8,7 +8,7 @@ cd "$PROJECT_DIR" || exit 1
 
 # Set the maximum size in bytes
 max_size=40000000 # 40 MB
-split_threshold=50000000 # 50 MB
+split_threshold=99000000 # 99 MB
 
 # Initialize the total size to 0
 total_size=0
@@ -55,8 +55,9 @@ for file in *.* **/*; do
     continue
   fi
   file_size=$(get_File_file_bytes "$file")
+  staged_files_count=$(git diff --cached --numstat | wc -l)
 
-  if [ $total_size -gt $max_size ] ; then
+  if [ $total_size -gt $max_size ] || [ $staged_files_count -gt 100 ] ; then
     git commit --message "$total_size"
     git push --force-with-lease
     total_size=0
@@ -65,7 +66,7 @@ for file in *.* **/*; do
 
   if ! git ls-files --error-unmatch "$file" &>/dev/null; then
     git add "$file"
-    echo "Added $file"
+		echo "Added ${file}. $total_size/$max_size. $staged_files_count/100."
     total_size=$((total_size + file_size))
   fi
 done
