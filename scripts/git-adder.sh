@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euox pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_DIR="$SCRIPT_DIR/.."
@@ -8,7 +8,6 @@ cd "$PROJECT_DIR" || exit 1
 
 # Set the maximum size in bytes
 max_size=40000000 # 40 MB
-split_threshold=99000000 # 99 MB
 
 # Initialize the total size to 0
 total_size=0
@@ -19,35 +18,8 @@ function get_File_file_bytes() {
   stat --printf="%s" "$file"
 }
 
-function splitFile() {
-  local path dir fileName
-  path="$(realpath "$1")"
-  fileName=$(basename -- "$path")
-  dir="${path%%.*}"
-  mkdir "$dir"
-  cd "$dir" || exit 1
-  mv "$path" "${dir}/${fileName}"
-  7z -v10m -mx=9 a "${fileName}.7z" "$fileName" > /dev/null
-  rm -f "$fileName"
-  cd ..
-}
-
 # reset to last remote commit
 git reset --quiet "origin/$(git rev-parse --abbrev-ref HEAD)"
-
-# shellcheck disable=SC2044
-for file in *.* **/*; do
-  if [ ! -f "$file" ]; then
-    continue
-  fi
-
-  file_size=$(get_File_file_bytes "$file")
-  if [ "$file_size" -lt "$split_threshold" ]; then
-    continue
-  fi
-
-  splitFile "$file"
-done
 
 # shellcheck disable=SC2044
 for file in *.* **/*; do
@@ -57,10 +29,19 @@ for file in *.* **/*; do
   file_size=$(get_File_file_bytes "$file")
   staged_files_count=$(git diff --cached --numstat | wc -l)
 
+  if [ $file_size -gt 90000000 ]; then
+    echo "Skipping ${file} because it is larger than 90MB."
+    continue
+  fi
+
   if [ $total_size -gt $max_size ] || [ $staged_files_count -gt 100 ] ; then
     git commit --message "$total_size"
     git push --force-with-lease
     total_size=0
+    continue
+  fi
+
+  if git check-ignore -q "$file"; then
     continue
   fi
 
@@ -71,7 +52,6 @@ for file in *.* **/*; do
   fi
 done
 
-git add .
 if [ "$(git status --porcelain)" ]; then
   git commit --message "$total_size"
   git push --force-with-lease
