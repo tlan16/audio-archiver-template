@@ -9,7 +9,8 @@ cd "$PROJECT_DIR" || exit 1
 if [[ "$(uname -a)" == *"codespace"* ]]; then
   sudo apt-get update
   sudo apt-get install -y aria2 uuid-runtime python3-mutagen python3-certifi ca-certificates python3-brotli python3-websockets python3-xattr python3-pycryptodome python3-m3u8 httpie ffmpeg parallel
-  pip install --upgrade phantomjs dash httpie yt-dlp
+  pip install --upgrade phantomjs dash httpie
+  pipx install yt-dlp
 fi
 
 # Add $HOME/.python/current/bin to path if exists
