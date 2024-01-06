@@ -13,7 +13,8 @@ concurrency:
 jobs:
   archive:
     runs-on:
-      - self-hosted
+      - ubuntu-latest
+      # - self-hosted
     permissions:
       contents: write
     steps:
