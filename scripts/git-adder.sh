@@ -17,8 +17,11 @@ function get_File_file_bytes() {
   stat --printf="%s" "$file"
 }
 
-# reset to last remote commit
-git reset --quiet "origin/$(git rev-parse --abbrev-ref HEAD)"
+function human_size() {
+  local size
+  size="$1"
+	numfmt --to=iec-i --suffix=B --format="%.3f" "$size"
+}
 
 # shellcheck disable=SC2044
 for file in *.* **/*; do
@@ -35,8 +38,8 @@ for file in *.* **/*; do
 
   if [ $total_size -gt $max_size ] || [ $staged_files_count -gt 100 ] ; then
     git commit --message "$total_size"
-    git push --force-with-lease
-    total_size=0
+    git push
+		total_size=0
     continue
   fi
 
@@ -46,12 +49,12 @@ for file in *.* **/*; do
 
   if ! git ls-files --error-unmatch "$file" &>/dev/null; then
     git add "$file"
-		echo "Added ${file}. $total_size/$max_size. $staged_files_count/100."
-    total_size=$((total_size + file_size))
+		total_size=$((total_size + file_size))
+		echo "Added ${file}. $(human_size "$total_size")/$(human_size "$max_size"), $(git diff --cached --numstat | wc -l)/100."
   fi
 done
 
 if [ "$(git status --porcelain)" ]; then
   git commit --message "$total_size"
-  git push --force-with-lease
+  git push
 fi
