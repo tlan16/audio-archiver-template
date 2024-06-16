@@ -26,7 +26,6 @@ function human_size() {
 
 # shellcheck disable=SC2044
 for file in ./* ./**/*; do
-  echo "$file"
   if [[ "$file" == *"URLs.txt" ]] || [ ! -f "$file" ]; then
     continue
   fi
