@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+shopt -s globstar
 set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
@@ -24,7 +25,8 @@ function human_size() {
 }
 
 # shellcheck disable=SC2044
-for file in *.* **/*; do
+for file in ./* ./**/*; do
+  echo "$file"
   if [[ "$file" == *"URLs.txt" ]] || [ ! -f "$file" ]; then
     continue
   fi
@@ -47,7 +49,7 @@ for file in *.* **/*; do
     continue
   fi
 
-  if ! git ls-files --error-unmatch "$file" &>/dev/null; then
+  if ! git diff -s --exit-code "$file" &>/dev/null; then
     git add "$file"
 		total_size=$((total_size + file_size))
 		echo "Added ${file}. $(human_size "$total_size")/$(human_size "$max_size"), $(git diff --cached --numstat | wc -l)/100."
