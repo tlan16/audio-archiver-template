@@ -26,8 +26,10 @@ function human_size() {
 
 # shellcheck disable=SC2044
 for file in ./* ./**/*; do
-  if [[ "$file" == *"URLs.txt" ]] || [ ! -f "$file" ]; then
-    continue
+  echo "$file"
+	if [[ "$file" == *"URLs.txt" ]] || [ ! -f "$file" ]; then
+    echo "Skipped."
+		continue
   fi
   file_size=$(get_File_file_bytes "$file")
   staged_files_count=$(git diff --cached --numstat | wc -l)
@@ -41,14 +43,14 @@ for file in ./* ./**/*; do
     git commit --message "$total_size"
     git push
 		total_size=0
-    continue
   fi
 
   if git check-ignore -q "$file"; then
-    continue
+    echo "Skipped"
+		continue
   fi
 
-  if ! git diff -s --exit-code "$file" &>/dev/null; then
+  if git diff --cached --quiet "$file"; then
     git add "$file"
 		total_size=$((total_size + file_size))
 		echo "Added ${file}. $(human_size "$total_size")/$(human_size "$max_size"), $(git diff --cached --numstat | wc -l)/100."
