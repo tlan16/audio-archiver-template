@@ -39,25 +39,29 @@ for file in ./* ./**/*; do
       if git check-ignore -q "$file"; then
         echo "Skipped git ignored file."
       else
-        if [ $total_size -gt $max_size ] || [ $staged_files_count -gt 100 ] ; then
-          echo "Commiting and pushing.";
-          git commit --message "$total_size" > /dev/null 2>&1 || true;
-          git push > /dev/null 2>&1 || true;
-          total_size=0;
-          echo "Commited and pushed";
+        if [ "$staged_files_count" -gt 0 ]; then
+          if [ $total_size -gt $max_size ] || [ $staged_files_count -gt 100 ] ; then
+            echo "Commiting and pushing...";
+            git commit --message "$total_size" > /dev/null 2>&1 || true;
+            git push > /dev/null 2>&1 || true;
+            total_size=0;
+            echo "Commited and pushed";
+          fi
         fi
 
         if git diff --cached --quiet "$file"; then
           git add "$file";
           total_size=$((total_size + file_size));
-          echo "Added ${file}. $(human_size "$total_size")/$(human_size "$max_size"), $(git diff --cached --numstat | wc -l)/100.";
+          if [ "$(git diff --cached --numstat | wc -l)" -gt 0 ]; then
+            echo "Added ${file}. $(human_size "$total_size")/$(human_size "$max_size"), $(git diff --cached --numstat | wc -l)/100.";
+          fi
         fi
       fi
     else
       echo "Skipping ${file} because it is larger than 90MB."
     fi
 	else
-    echo "Skipped non file path."
+    echo "Skipped non file path.";
   fi
 done
 
